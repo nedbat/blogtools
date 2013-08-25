@@ -121,17 +121,18 @@ def getImageSize(s):
             print "Couldn't open image %s" % s
     if imgsizecache.has_key(s):
         return imgsizecache[s]
-    
-def imgwidth(s):
-    size = getImageSize(s)
-    if size:
-        return str(size[0])
-    else:
-        return ''
 
-def imgheight(s):
+def imgwidth(s, scale=None):
+    return img_dimension(0, s, scale)
+
+def imgheight(s, scale=None):
+    return img_dimension(1, s, scale)
+
+def img_dimension(which, s, scale=None):
+    if scale: print "Scale is %r" % (scale,)
+    scale = scale or 1.0
     size = getImageSize(s)
     if size:
-        return str(size[1])
+        return str(int(size[which]*float(scale)))
     else:
         return ''
