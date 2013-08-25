@@ -7,7 +7,7 @@ import Image
 
 def endswith(text, s):
     return int(bool(text.endswith(s)))
-    
+
 def makeuri(base, u, dpath):
     if ':' in u:
         # Full URI: don't touch.
@@ -84,7 +84,7 @@ def lexcode(code, lang, number=False):
             # yield 0, '</pre>'
 
     aliases = {
-        "cs": "c#", 
+        "cs": "c#",
         "htaccess": "apacheconf",
         "ps": "postscript",
         "m3u": "text",  # Don't know if this will ever be supported...
@@ -129,7 +129,6 @@ def imgheight(s, scale=None):
     return img_dimension(1, s, scale)
 
 def img_dimension(which, s, scale=None):
-    if scale: print "Scale is %r" % (scale,)
     scale = scale or 1.0
     size = getImageSize(s)
     if size:
