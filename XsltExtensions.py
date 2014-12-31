@@ -57,11 +57,16 @@ def idfromtext(s):
     return s.replace('%', '_')
 
 def slugfromtext(txt):
-    slug = txt.encode('ascii', 'ignore').replace(' ', '_').lower().strip()
+    slug = txt.encode('ascii', 'ignore').replace(' ', '_').lower()
     slug = re.sub('[^\w _]', '', slug)
+    slug = re.sub('_+', '_', slug).strip('_')
     if not slug:
-        slug = idfromtext(txt)
+        import urllib
+        slug = urllib.quote(txt.strip().replace(' ', '_').encode('utf-8'))
+        slug = slug.replace('%', '_')
     return slug
+
+idfromtext = slugfromtext
 
 def lexcode(code, lang, number=False):
     import pygments, pygments.lexers, pygments.formatters
