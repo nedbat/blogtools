@@ -152,6 +152,9 @@ class FtpUpload:
         self.ftp.set_pasv(1)
         #self.ftp.set_debuglevel(2)
 
+        # 2.7.8 added a maxline of 8192, which is not long enough.
+        self.ftp.maxline = 100000
+
     def setMd5File(self, md5file):
         """
         Assign a filename to use for the MD5 tracking.
@@ -201,6 +204,8 @@ class FtpUpload:
         for pat in binary.split():
             patdict[pat] = self.ezftp.putbin
 
+        nchanged = 0
+
         # Walk the tree, putting files to the ezftp.
         srcpath = path.path(src)
         for thispath in srcpath.walkfiles():
@@ -216,6 +221,10 @@ class FtpUpload:
             # What was the last MD5 fingerprint?
             thatMd5 = self.md5DictIn.get(thatpathstr, '')
 
+            # Remember the new fingerprint.
+            self.md5DictOut[thatpathstr] = thisMd5
+            self.md5DictUp[thatpathstr] = thisMd5
+
             # If the current file is different, then put it to the server.
             if thisMd5 != thatMd5:
                 # Find the pattern the file matches, and use the ftp function
@@ -225,9 +234,9 @@ class FtpUpload:
                         ftpfn = patdict[pat]
                         ftpfn(thispath, thatpath)
 
-            # Remember the new fingerprint.
-            self.md5DictOut[thatpathstr] = thisMd5
-            self.md5DictUp[thatpathstr] = thisMd5
+                        nchanged += 1
+                        if nchanged % 30 == 0:
+                            self.writeMd5()
 
     def deleteOldFiles(self):
         """
@@ -250,6 +259,9 @@ class FtpUpload:
         # Done with ftp'ing.
         self.ezftp.quit()
 
+        self.writeMd5()
+
+    def writeMd5(self):
         # Write the md5 control file out for next time.
         if self.md5file:
             outf = open(self.md5file, "w")
