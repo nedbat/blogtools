@@ -3,7 +3,7 @@
 ##
 
 import os, re, time
-import Image
+from PIL import Image
 
 def endswith(text, s):
     return int(bool(text.endswith(s)))
