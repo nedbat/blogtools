@@ -163,7 +163,15 @@ class FtpUpload:
         if self.md5file:
             try:
                 with open(self.md5file, "r") as inf:
-                    self.md5DictIn = pickle.load(inf)
+                    first = inf.read(1)
+                    inf.seek(0)
+                    if first == "(":
+                        # Old pickle
+                        self.md5DictIn = pickle.load(inf)
+                    else:
+                        for line in inf:
+                            md5hash, filename = line.split(' ', 1)
+                            self.md5DictIn[filename] = md5hash
                 self.md5DictUp.update(self.md5DictIn)
             except IOError:
                 self.md5DictIn = {}
@@ -263,4 +271,5 @@ class FtpUpload:
         # Write the md5 control file out for next time.
         if self.md5file:
             with open(self.md5file, "w") as outf:
-                pickle.dump(self.md5DictUp, outf)
+                for filename, md5hash in sorted(self.md5DictUp.iteritems()):
+                    outf.write("{} {}\n".format(md5hash, filename))
