@@ -74,9 +74,9 @@ class EzFtp:
         """
         thatDir, thatFile = os.path.split(that)
         self.cd(thatDir)
-        f = open(this, "r")
-        logging.info("ftpstorasc %s" % that)
-        self.ftp.storlines("STOR "+thatFile, f)
+        with open(this, "r") as f:
+            logging.info("ftpstorasc %s" % that)
+            self.ftp.storlines("STOR "+thatFile, f)
 
     def putbin(self, this, that):
         """
@@ -84,9 +84,9 @@ class EzFtp:
         """
         thatDir, thatFile = os.path.split(that)
         self.cd(thatDir)
-        f = open(this, "rb")
-        logging.info("ftpstorbin %s" % that)
-        self.ftp.storbinary("STOR "+thatFile, f)
+        with open(this, "rb") as f:
+            logging.info("ftpstorbin %s" % that)
+            self.ftp.storbinary("STOR "+thatFile, f)
 
     def delete(self, that):
         """
@@ -162,10 +162,9 @@ class FtpUpload:
         self.md5file = md5file
         if self.md5file:
             try:
-                inf = open(self.md5file, "r")
-                self.md5DictIn = pickle.load(inf)
+                with open(self.md5file, "r") as inf:
+                    self.md5DictIn = pickle.load(inf)
                 self.md5DictUp.update(self.md5DictIn)
-                inf.close()
             except IOError:
                 self.md5DictIn = {}
 
@@ -213,9 +212,8 @@ class FtpUpload:
             thatpathstr = str(thatpath)
             # Compute this file's MD5 fingerprint
             m = hashlib.md5()
-            f = open(thispath, "rb")
-            for l in f.readlines():
-                m.update(l)
+            with open(thispath, "rb") as f:
+                m.update(f.read())
             thisMd5 = m.hexdigest()
 
             # What was the last MD5 fingerprint?
@@ -264,6 +262,5 @@ class FtpUpload:
     def writeMd5(self):
         # Write the md5 control file out for next time.
         if self.md5file:
-            outf = open(self.md5file, "w")
-            pickle.dump(self.md5DictUp, outf)
-            outf.close()
+            with open(self.md5file, "w") as outf:
+                pickle.dump(self.md5DictUp, outf)
