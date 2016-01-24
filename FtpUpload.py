@@ -39,7 +39,7 @@ class EzFtp:
         """
         self.ftp.cwd(dir)
 
-    def cd(self, dir, create=1):
+    def cd(self, dir, create=True):
         """
         Change the directory on the server, if need be.
         If create is true, directories are created if necessary to get to the full path.
@@ -64,9 +64,9 @@ class EzFtp:
                             self.ftp.mkd(d)
                             self.ftp.cwd(d)
                         else:
-                            return 0
+                            return False
                     self.serverDir = os.path.join(self.serverDir, d)
-        return 1
+        return True
 
     def putasc(self, this, that):
         """
@@ -93,7 +93,7 @@ class EzFtp:
         Delete a file on the server.
         """
         thatDir, thatFile = os.path.split(that)
-        if self.cd(thatDir, 0):
+        if self.cd(thatDir, create=False):
             logging.info("ftpdel %s" % that)
             try:
                 self.ftp.delete(thatFile)
@@ -170,6 +170,9 @@ class FtpUpload:
                         self.md5DictIn = pickle.load(inf)
                     else:
                         for line in inf:
+                            line = line.rstrip()
+                            if not line:
+                                continue
                             md5hash, filename = line.split(' ', 1)
                             self.md5DictIn[filename] = md5hash
                 self.md5DictUp.update(self.md5DictIn)
