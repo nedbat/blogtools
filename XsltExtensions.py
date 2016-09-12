@@ -97,8 +97,7 @@ def lexcode(code, lang, number=False):
     lang = lang.lower()
     lang = aliases.get(lang, lang)
     lexer = pygments.lexers.get_lexer_by_name(lang, stripall=True)
-    #formatter = pygments.formatters.HtmlFormatter(linenos=number, cssclass="source")
-    formatter = CodeHtmlFormatter(linenos=number, cssclass="source")
+    formatter = CodeHtmlFormatter(linenos='inline' if number else False, cssclass="source")
     result = pygments.highlight(code, lexer, formatter)
     return result
 
