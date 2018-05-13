@@ -319,7 +319,7 @@ class XuffApp:
         ns['lexcode'] = wrapit(lexcode)
         ns['imgwidth'] = wrapit(imgwidth)
         ns['imgheight'] = wrapit(imgheight)
-        ns['smartypants'] = wrapit(smartypants.smartyPants)
+        ns['smartypants'] = wrapit(smartypants.smartypants)
 
         # Execute all the files.
         #try:
