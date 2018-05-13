@@ -22,6 +22,15 @@ class Tracer:
     def __getattr__(self, name):
         return lambda *a, **k: self.fout.write("%s.%s(%s, %s)\n" % (self.myname, name, a, k))
 
+def path_parts(filepath):
+    if not filepath:
+        return []
+    return filepath.split(os.sep)
+
+def list_startswith(l1, l2):
+    return l1[:len(l2)] == l2
+
+
 class EzFtp:
     """
     A simplified interface to ftplib.
@@ -47,13 +56,14 @@ class EzFtp:
         """
         if dir != self.serverDir:
             # Move up to the common root.
-            while not dir.startswith(self.serverDir):
+            dir_parts = path_parts(dir)
+            server_dir_parts = path_parts(self.serverDir)
+            while not list_startswith(dir_parts, server_dir_parts):
                 logging.info("ftpcd ..")
                 self.ftp.cwd("..")
-                self.serverDir = os.path.split(self.serverDir)[0]
+                server_dir_parts.pop()
             # Move down to the right directory
-            doDirs = dir[len(self.serverDir):]
-            for d in string.split(doDirs, os.sep):
+            for d in dir_parts[len(server_dir_parts):]:
                 if d:
                     try:
                         logging.info("ftpcd %s" % d)
@@ -65,7 +75,8 @@ class EzFtp:
                             self.ftp.cwd(d)
                         else:
                             return False
-                    self.serverDir = os.path.join(self.serverDir, d)
+                    server_dir_parts.append(d)
+            self.serverDir = os.sep.join(server_dir_parts)
         return True
 
     def putasc(self, this, that):
