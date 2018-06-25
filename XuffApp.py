@@ -7,6 +7,8 @@ http://www.nedbatchelder.com
 20020202 - Created
 20021124 - Separated into stellated.XuffApp
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
 import os, re, shutil, string, sys, time
 from xml.dom import Node
@@ -15,7 +17,7 @@ from xml.sax import make_parser, handler, saxutils
 import logging
 import smartypants
 
-import walk
+from . import walk
 
 _verbose = 0
 
@@ -25,7 +27,7 @@ class Timer:
 
     def show(self, activity):
         now = time.clock()
-        print "Time: %s: %.2f sec" % (activity, now - self.start)
+        print("Time: %s: %.2f sec" % (activity, now - self.start))
         self.start = now
 
 class XuffError:
@@ -35,7 +37,7 @@ class XuffError:
     def __repr__(self):
         return self.msg
 
-def makedirs(name, mode=0777):
+def makedirs(name, mode=0o777):
     """makedirs(path [, mode=0777]) -> None
 
     Super-mkdir; create a leaf directory and all intermediate ones.
@@ -45,17 +47,17 @@ def makedirs(name, mode=0777):
 
     Copied from os.py and patched to allow 'foo\\.' as an arg.
     """
-    if _verbose > 2: print "makedirs", name
+    if _verbose > 2: print("makedirs", name)
     head, tail = os.path.split(name)
     if not tail:
         head, tail = os.path.split(head)
     if head and tail and not os.path.exists(head):
         makedirs(head, mode)
     if not os.path.exists(name):
-        if _verbose > 1: print "mkdir", name
+        if _verbose > 1: print("mkdir", name)
         os.mkdir(name, mode)
     else:
-        if _verbose > 2: print "stat", name, os.stat(name)
+        if _verbose > 2: print("stat", name, os.stat(name))
 
 def prepareForOutputFile(path):
     """
@@ -67,9 +69,9 @@ def prepareForOutputFile(path):
         if not os.access(dirs, os.F_OK):
             makedirs(dirs)
     if os.access(path, os.F_OK):
-        if _verbose > 1: print "rm", path
+        if _verbose > 1: print("rm", path)
         os.remove(path)
-    if _verbose > 0: print "writing", path
+    if _verbose > 0: print("writing", path)
 
 class MyXslt:
 
@@ -143,7 +145,7 @@ class MyXslt:
 def parse_xml(xmlfile):
     try:
         return etree.parse(xmlfile).getroot()
-    except Exception, e:
+    except Exception as e:
         raise Exception("Couldn't parse %r: %s" % (xmlfile, e))
 
 class TreeFileWalker(walk.DirWalker):
@@ -156,15 +158,15 @@ class TreeFileWalker(walk.DirWalker):
 
     def startDir(self, dirName, dirPath):
         dirPath = string.replace(dirPath, '\\', '/')
-        print >> self.dstf, "<directory name='%s' path='%s'>" % (dirName, dirPath)
+        print("<directory name='%s' path='%s'>" % (dirName, dirPath), file=self.dstf)
 
     def endDir(self, dirName, dirPath):
-        print >> self.dstf, "</directory>"
+        print("</directory>", file=self.dstf)
 
     def file(self, fileName, path, patIndex):
         if patIndex == 0:
             path = string.replace(path, '\\', '/')
-            print >> self.dstf, "<file name='%s' path='%s'>" % (fileName, path)
+            print("<file name='%s' path='%s'>" % (fileName, path), file=self.dstf)
             # open the file
             f = open(path)
             l1 = f.readline().strip()
@@ -176,9 +178,9 @@ class TreeFileWalker(walk.DirWalker):
             self.dstf.write(l1)
             for l in f.readlines():
                 self.dstf.write(l)
-            print >> self.dstf, "</file>"
+            print("</file>", file=self.dstf)
         elif patIndex == 1:
-            print >> self.dstf, "<file name='%s'/>" % fileName
+            print("<file name='%s'/>" % fileName, file=self.dstf)
 
 class XslTreeWalker(walk.DirWalker):
     """
@@ -248,9 +250,9 @@ class FileSplitter(handler.ContentHandler):
         if self.xmlgen:
             self.xmlgen.characters(content)
         elif content.strip() != '':
-            print "Orphaned chars:", content
+            print("Orphaned chars:", content)
 
-from XsltExtensions import *
+from .XsltExtensions import *
 
 ##
 ##  The XuffApp
@@ -270,7 +272,7 @@ class XuffApp:
         import getopt
 
         def usage():
-            print "xuff [-t] [-v[v]] xuff-files ..."
+            print("xuff [-t] [-v[v]] xuff-files ...")
 
         # Parse arguments.
         try:
@@ -302,8 +304,8 @@ class XuffApp:
             def inside(dummy, *args):
                 try:
                     return fn(*args)
-                except Exception, e:
-                    print "Error in XSLT extension: %s" % e
+                except Exception as e:
+                    print("Error in XSLT extension: %s" % e)
                     raise
             return inside
 
@@ -407,7 +409,7 @@ class XuffApp:
         Write a message.
         """
         txt = self.getAttr(e, 'text')
-        print txt
+        print(txt)
 
     def handle_treefile(self, e):
         """
@@ -418,8 +420,8 @@ class XuffApp:
         prepareForOutputFile(out)
         outf = open(out, 'w')
 
-        print >> outf, "<?xml version='1.0'?>"
-        print >> outf, "<tree>"
+        print("<?xml version='1.0'?>", file=outf)
+        print("<tree>", file=outf)
 
         if e.get('src'):
             # The element itself is the file spec.
@@ -433,7 +435,7 @@ class XuffApp:
                     else:
                         self.error("Didn't understand %s element" % (e2.tag))
 
-        print >> outf, "</tree>"
+        print("</tree>", file=outf)
 
     def doFilesForTreeFile(self, e, outf):
         src = self.getAttr(e, 'src')
@@ -535,7 +537,7 @@ class XuffApp:
         """
         dst = self.getAttr(e, 'dst')
         if os.access(dst, os.F_OK):
-            if _verbose > 0: print "del", dst
+            if _verbose > 0: print("del", dst)
             os.remove(dst)
 
     def handle_rmdir(self, e):
@@ -544,7 +546,7 @@ class XuffApp:
         """
         dst = self.getAttr(e, 'dst')
         if os.access(dst, os.F_OK):
-            if _verbose > 0: print "rmdir", dst
+            if _verbose > 0: print("rmdir", dst)
             shutil.rmtree(dst)
 
     def handle_xuff(self, e):
@@ -552,7 +554,7 @@ class XuffApp:
         Call another xuff script.
         """
         xuff = self.getAttr(e, 'file')
-        if _verbose > 0: print "xuffing", xuff
+        if _verbose > 0: print("xuffing", xuff)
         self.processFile(xuff)
 
     def handle_upload(self, e):
@@ -582,8 +584,8 @@ class XuffApp:
         try:
             fu.upload(hostdir=hostdir, text=text, binary=binary, src=src)
             fu.deleteOldFiles()
-        except Exception, msg:
-            print "Error:", msg
+        except Exception as msg:
+            print("Error:", msg)
         fu.finish()
 
     def handle_httpping(self, e):
@@ -610,8 +612,8 @@ class XuffApp:
         if args:
             url += '?' + args
 
-        if _verbose: print 'ping host:', host
-        if _verbose: print 'ping url:', url
+        if _verbose: print('ping host:', host)
+        if _verbose: print('ping url:', url)
 
         conn = httplib.HTTPConnection(host)
         conn.request("GET", url)
@@ -619,10 +621,10 @@ class XuffApp:
         if r.status in [200,302]:
             d = r.read()
             if _verbose:
-                print 'ping returned:'
-                print d
+                print('ping returned:')
+                print(d)
         else:
-            print "HTTP ping status:", r.status, r.reason
+            print("HTTP ping status:", r.status, r.reason)
         conn.close()
 
     def handle_xmlrpc(self, e):
@@ -650,9 +652,9 @@ class XuffApp:
         remoteObject = getattr(remoteServer, object)
         remoteMethod = getattr(remoteObject, method)
         if _verbose:
-            print 'xml-rpc: %s %s.%s%s' % (url, object, method, args)
+            print('xml-rpc: %s %s.%s%s' % (url, object, method, args))
         dReturn = remoteMethod(*args)
-        print dReturn['message']
+        print(dReturn['message'])
 
 if __name__ == '__main__':
     xuff = XuffApp()

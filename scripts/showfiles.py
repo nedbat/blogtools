@@ -1,7 +1,9 @@
-"""Simple file lister to show me what I want to see.
+"""
+Simple file lister to show me what I want to see.
 Ned Batchelder, 12/14/2001
 http://www.nedbatchelder.com
 """
+from __future__ import print_function
 
 # Things that aren't right here:
 #   - I have a copy of the standard glob module (I forget why!)
@@ -15,6 +17,7 @@ from stat import *
 
 ### Bogus: this is a tweaked copy of the standard glob module.
 import fnmatch, re
+from functools import reduce
 
 def glob(pathname):
     """Return a list of paths matching a pathname pattern.
@@ -216,7 +219,7 @@ def glue(l):
 def main(args):
 
     def usage():
-        print '-od -os -ox -d -s -x -r -b'
+        print('-od -os -ox -d -s -x -r -b')
         sys.exit()
         
     try:
@@ -289,12 +292,12 @@ def main(args):
         totsize += e.size
         nfiles += 1
         if brief:
-            print e.shortForm()
+            print(e.shortForm())
         else:
-            print e.longForm()
+            print(e.longForm())
         
     if not brief:
-        print totalformat % (formatSize(totsize), nfiles)
+        print(totalformat % (formatSize(totsize), nfiles))
 
 if __name__ == '__main__':
     main(sys.argv[1:])

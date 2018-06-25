@@ -1,3 +1,4 @@
+from __future__ import print_function
 ##
 ##  XSLT extension functions.
 ##
@@ -109,7 +110,7 @@ imgpath = [ curdir, os.path.join(curdir, 'pages') ]
 def getImageSize(s):
     if s.startswith('http://') or s.startswith('file://'):
         return
-    if not imgsizecache.has_key(s):
+    if s not in imgsizecache:
         img = None
         for p in imgpath:
             try:
@@ -117,13 +118,13 @@ def getImageSize(s):
                 img = Image.open(spath)
                 #print "opened %r" % s
                 break
-            except IOError, msg:
+            except IOError as msg:
                 pass
         if img:
             imgsizecache[s] = img.size
         else:
-            print "Couldn't open image %s" % s
-    if imgsizecache.has_key(s):
+            print("Couldn't open image %s" % s)
+    if s in imgsizecache:
         return imgsizecache[s]
 
 def imgwidth(s, scale=None):
