@@ -145,7 +145,7 @@ class MyXslt:
 def parse_xml(xmlfile):
     try:
         return etree.parse(xmlfile).getroot()
-    except Exception, e:
+    except Exception as e:
         raise Exception("Couldn't parse %r: %s" % (xmlfile, e))
 
 class TreeFileWalker(walk.DirWalker):
@@ -304,7 +304,7 @@ class XuffApp:
             def inside(dummy, *args):
                 try:
                     return fn(*args)
-                except Exception, e:
+                except Exception as e:
                     print("Error in XSLT extension: %s" % e)
                     raise
             return inside
@@ -327,7 +327,7 @@ class XuffApp:
         #try:
         for a in args:
             self.processFile(a)
-        #except XuffError, msg:
+        #except XuffError as msg:
         #    print("*** %s" % msg)
 
     def isXuffElement(self, e):
@@ -584,7 +584,7 @@ class XuffApp:
         try:
             fu.upload(hostdir=hostdir, text=text, binary=binary, src=src)
             fu.deleteOldFiles()
-        except Exception, msg:
+        except Exception as msg:
             print("Error:", msg)
         fu.finish()
 
