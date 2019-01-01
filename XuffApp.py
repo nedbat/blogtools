@@ -37,8 +37,8 @@ class XuffError:
     def __repr__(self):
         return self.msg
 
-def makedirs(name, mode=0777):
-    """makedirs(path [, mode=0777]) -> None
+def makedirs(name):
+    """makedirs(path) -> None
 
     Super-mkdir; create a leaf directory and all intermediate ones.
     Works like mkdir, except that any intermediate path segment (not
@@ -52,10 +52,10 @@ def makedirs(name, mode=0777):
     if not tail:
         head, tail = os.path.split(head)
     if head and tail and not os.path.exists(head):
-        makedirs(head, mode)
+        makedirs(head)
     if not os.path.exists(name):
         if _verbose > 1: print("mkdir", name)
-        os.mkdir(name, mode)
+        os.mkdir(name)
     else:
         if _verbose > 2: print("stat", name, os.stat(name))
 
