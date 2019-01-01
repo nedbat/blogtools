@@ -2,6 +2,8 @@
 Directory walking, adapted from ASPN Cookbook.
 """
 
+from __future__ import print_function
+
 import fnmatch
 import os
 import string
@@ -70,20 +72,20 @@ if __name__ == '__main__':
     # test code
     class TestIt(DirWalker):
         def startDir(self, dirName, dirPath):
-            print "startDir", dirName, dirPath
+            print("startDir", dirName, dirPath)
 
         def endDir(self, dirName, dirPath):
-            print "endDir", dirName, dirPath
+            print("endDir", dirName, dirPath)
 
         def file(self, fileName, fullName, patIndex):
-            print "file", fileName, fullName, patIndex
+            print("file", fileName, fullName, patIndex)
             
-    print '\nExample1:'
+    print('\nExample1:')
     walker = TestIt()
     walker.setPattern('*', 0)
     walker.walk('.', '.')
 
-    print '\nExample 2:'
+    print('\nExample 2:')
     walker = TestIt()
     walker.setPattern('*.py', 0)
     walker.setPattern('*.xml', 1)
