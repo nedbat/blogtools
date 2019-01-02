@@ -6,7 +6,6 @@ from __future__ import print_function
 
 import fnmatch
 import os
-import string
 
 class DirWalker:
     def __init__(self):
@@ -27,7 +26,7 @@ class DirWalker:
     def setPattern(self, pattern, index):
         while index >= len(self.patterns):
             self.patterns.append([])
-        self.patterns[index] = string.split(pattern)
+        self.patterns[index] = pattern.split()
         
     def walkdir(self, dname, dfull):
         # must have at least root folder
