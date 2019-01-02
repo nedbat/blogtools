@@ -17,7 +17,7 @@ from xml.sax import make_parser, handler, saxutils
 import logging
 import smartypants
 
-import walk
+from . import walk
 
 _verbose = 0
 
@@ -252,7 +252,7 @@ class FileSplitter(handler.ContentHandler):
         elif content.strip() != '':
             print("Orphaned chars:", content)
 
-from XsltExtensions import *
+from .XsltExtensions import *
 
 ##
 ##  The XuffApp

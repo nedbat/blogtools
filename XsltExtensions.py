@@ -2,7 +2,11 @@
 ##  XSLT extension functions.
 ##
 
+from __future__ import print_function
+
 import os, re, time
+import urllib.parse
+
 from PIL import Image
 
 def endswith(text, s):
@@ -26,8 +30,7 @@ def makeuri(base, u, dpath):
     return uri
 
 def urlquote(u):
-    import urllib
-    return urllib.quote(urllib.unquote(u.encode('utf-8')))
+    return urllib.parse.quote(urllib.parse.unquote(u.encode('utf-8')))
 
 def phpquote(u):
     return u.replace('"', r'\"').replace("'", r"\'")
@@ -52,17 +55,15 @@ def w3cdtf(s8601):
     return "%s%s%02d:%02d" % (sTime, zchar, zhours, zmins)
 
 def idfromtext(s):
-    import urllib
-    s = urllib.quote(s.strip().replace(' ', '_').encode('utf-8'))
+    s = urllib.parse.quote(s.strip().replace(' ', '_').encode('utf-8'))
     return s.replace('%', '_')
 
 def slugfromtext(txt):
-    slug = txt.encode('ascii', 'ignore').replace(' ', '_').lower()
+    slug = txt.encode('ascii', 'ignore').decode('ascii').replace(' ', '_').lower()
     slug = re.sub('[^\w _]', '', slug)
     slug = re.sub('_+', '_', slug).strip('_')
     if not slug:
-        import urllib
-        slug = urllib.quote(txt.strip().replace(' ', '_').encode('utf-8'))
+        slug = urllib.parse.quote(txt.strip().replace(' ', '_').encode('utf-8'))
         slug = slug.replace('%', '_')
     return slug
 
@@ -109,21 +110,21 @@ imgpath = [ curdir, os.path.join(curdir, 'pages') ]
 def getImageSize(s):
     if s.startswith('http://') or s.startswith('file://'):
         return
-    if not imgsizecache.has_key(s):
+    if s not in imgsizecache:
         img = None
         for p in imgpath:
             try:
                 spath = os.path.join(p, s)
                 img = Image.open(spath)
-                #print "opened %r" % s
+                #print("opened %r" % s)
                 break
-            except IOError, msg:
+            except IOError as msg:
                 pass
         if img:
             imgsizecache[s] = img.size
         else:
-            print "Couldn't open image %s" % s
-    if imgsizecache.has_key(s):
+            print("Couldn't open image %s" % s)
+    if s in imgsizecache:
         return imgsizecache[s]
 
 def imgwidth(s, scale=None):
