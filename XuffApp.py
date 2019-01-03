@@ -586,6 +586,7 @@ class XuffApp:
             fu.deleteOldFiles()
         except Exception as msg:
             print("Error:", msg)
+            raise
         fu.finish()
 
     def handle_httpping(self, e):

@@ -8,8 +8,9 @@ http://www.nedbatchelder.com
 """
 
 import ftplib, pickle, sys, hashlib, os, string
-import logging      # if not std, http://www.red-dove.com/python_logging.html
-import path         # http://www.jorendorff.com/articles/python/path
+import logging
+
+from path import Path
 
 __version__ = '1.0a'
 __all__ = ['FtpUpload']
@@ -85,7 +86,7 @@ class EzFtp:
         """
         thatDir, thatFile = os.path.split(that)
         self.cd(thatDir)
-        with open(this, "r") as f:
+        with open(this, "rb") as f:
             logging.info("ftpstorasc %s" % that)
             self.ftp.storlines("STOR "+thatFile, f)
 
@@ -228,7 +229,7 @@ class FtpUpload:
         nchanged = 0
 
         # Walk the tree, putting files to the ezftp.
-        srcpath = path.path(src)
+        srcpath = Path(src)
         for thispath in srcpath.walkfiles():
             thatpath = srcpath.relpathto(thispath)
             thatpathstr = str(thatpath)
@@ -285,5 +286,5 @@ class FtpUpload:
         # Write the md5 control file out for next time.
         if self.md5file:
             with open(self.md5file, "w") as outf:
-                for filename, md5hash in sorted(self.md5DictUp.iteritems()):
+                for filename, md5hash in sorted(self.md5DictUp.items()):
                     outf.write("{} {}\n".format(md5hash, filename))
