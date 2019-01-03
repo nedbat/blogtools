@@ -10,11 +10,12 @@ http://www.nedbatchelder.com
 
 from __future__ import print_function
 
-import os, re, shutil, string, sys, time
+import os, re, shutil, sys, time
+import logging
+
 from xml.dom import Node
 from lxml import etree
 from xml.sax import make_parser, handler, saxutils
-import logging
 import smartypants
 
 from . import walk
@@ -157,7 +158,7 @@ class TreeFileWalker(walk.DirWalker):
         self.dstf = dstf
 
     def startDir(self, dirName, dirPath):
-        dirPath = string.replace(dirPath, '\\', '/')
+        dirPath = dirPath.replace('\\', '/')
         print("<directory name='%s' path='%s'>" % (dirName, dirPath), file=self.dstf)  
 
     def endDir(self, dirName, dirPath):
@@ -165,7 +166,7 @@ class TreeFileWalker(walk.DirWalker):
 
     def file(self, fileName, path, patIndex):
         if patIndex == 0:
-            path = string.replace(path, '\\', '/')
+            path = path.replace('\\', '/')
             print("<file name='%s' path='%s'>" % (fileName, path), file=self.dstf)
             # open the file
             f = open(path)
@@ -198,10 +199,10 @@ class XslTreeWalker(walk.DirWalker):
     def file(self, fileName, path, patIndex):
         dpath = path
         if self.ext:
-            dpath = dpath[:string.rfind(dpath, '.')] + self.ext
+            dpath = dpath[:dpath.rfind('.')] + self.ext
         moreParams = {
-            'path':     '"' + string.replace(path, '\\', '/') + '"',
-            'dpath':    '"' + string.replace(dpath, '\\', '/') + '"'
+            'path':     '"' + path.replace('\\', '/') + '"',
+            'dpath':    '"' + dpath.replace('\\', '/') + '"'
             }
         dpath = os.path.join(self.dstpath, dpath)
         self.myxslt.transformFile(path, dpath, self.userXslParams, moreParams)
