@@ -8,10 +8,12 @@ http://www.nedbatchelder.com
 20021124 - Separated into stellated.XuffApp
 """
 
-from __future__ import print_function
-
-import os, re, shutil, sys, time
 import logging
+import os
+import re
+import shutil
+import sys
+import time
 
 from xml.dom import Node
 from lxml import etree

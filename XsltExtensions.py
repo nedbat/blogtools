@@ -2,9 +2,9 @@
 ##  XSLT extension functions.
 ##
 
-from __future__ import print_function
-
-import os, re, time
+import os
+import re
+import time
 import urllib.parse
 
 from PIL import Image

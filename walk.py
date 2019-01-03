@@ -2,8 +2,6 @@
 Directory walking, adapted from ASPN Cookbook.
 """
 
-from __future__ import print_function
-
 import fnmatch
 import os
 
