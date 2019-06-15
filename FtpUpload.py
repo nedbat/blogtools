@@ -230,7 +230,7 @@ class FtpUpload:
 
         # Walk the tree, putting files to the ezftp.
         srcpath = Path(src)
-        for thispath in srcpath.walkfiles():
+        for thispath in sorted(srcpath.walkfiles()):
             thatpath = srcpath.relpathto(thispath)
             thatpathstr = str(thatpath)
             # Compute this file's MD5 fingerprint
