@@ -322,6 +322,7 @@ class XuffApp:
         ns['idfromtext'] = wrapit(idfromtext)
         ns['slugfromtext'] = wrapit(slugfromtext)
         ns['lexcode'] = wrapit(lexcode)
+        ns['markdown'] = wrapit(markdown)
         ns['imgwidth'] = wrapit(imgwidth)
         ns['imgheight'] = wrapit(imgheight)
         ns['smartypants'] = wrapit(smartypants.smartypants)

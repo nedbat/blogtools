@@ -102,6 +102,12 @@ def lexcode(code, lang, number=False):
     result = pygments.highlight(code, lexer, formatter)
     return result
 
+
+def markdown(text):
+    import markdown2
+    return markdown2.markdown(text)
+
+
 imgsizecache = {}
 curdir = os.getcwd()
 # Yuk! Hard-coded path!
