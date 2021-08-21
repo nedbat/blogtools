@@ -195,7 +195,8 @@ class FtpUpload:
                hostdir='.',
                text='*.*',
                binary='',
-               src='.'
+               src='.',
+               only=None,
                ):
         """
         Upload a set of files.
@@ -205,6 +206,8 @@ class FtpUpload:
         Files that match one of the space-separated patterns in `text`
         are uploaded as text files, those that match the patterns in
         `binary` are uploaded as binary files.
+
+        `only` is an fnmatch pattern to limit the files we consider.
 
         This method can be called a number of times to upload different
         sets of files to or from different directories within the same
@@ -231,6 +234,9 @@ class FtpUpload:
         # Walk the tree, putting files to the ezftp.
         srcpath = Path(src)
         for thispath in sorted(srcpath.walkfiles()):
+            if only:
+                if not thispath.fnmatch(only):
+                    continue
             thatpath = srcpath.relpathto(thispath)
             thatpathstr = str(thatpath)
             # Compute this file's MD5 fingerprint

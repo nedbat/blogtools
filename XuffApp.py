@@ -577,7 +577,7 @@ class XuffApp:
 
         self.upload(**kw)
         
-    def upload(self, host, user, password, hostdir, src, text, binary, md5file):
+    def upload(self, host, user, password, hostdir, src, text, binary, md5file, only=None):
         import stellated.FtpUpload as FtpUpload
         import socket
 
@@ -586,8 +586,9 @@ class XuffApp:
             fu.setMd5File(md5file)
         fu.setHost(host, user, password)
         try:
-            fu.upload(hostdir=hostdir, text=text, binary=binary, src=src)
-            fu.deleteOldFiles()
+            fu.upload(hostdir=hostdir, text=text, binary=binary, src=src, only=only)
+            if not only:
+                fu.deleteOldFiles()
         except Exception as msg:
             print("Error:", msg)
             raise
