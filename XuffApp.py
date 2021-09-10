@@ -26,10 +26,10 @@ _verbose = 0
 
 class Timer:
     def __init__(self):
-        self.start = time.clock()
+        self.start = time.time()
 
     def show(self, activity):
-        now = time.clock()
+        now = time.time()
         print("Time: %s: %.2f sec" % (activity, now - self.start))
         self.start = now
 
