@@ -197,6 +197,7 @@ class FtpUpload:
                binary='',
                src='.',
                only=None,
+               skip=None,
                ):
         """
         Upload a set of files.
@@ -208,6 +209,7 @@ class FtpUpload:
         `binary` are uploaded as binary files.
 
         `only` is an fnmatch pattern to limit the files we consider.
+        `skip` is an fnmatch pattern to skip certain files.
 
         This method can be called a number of times to upload different
         sets of files to or from different directories within the same
@@ -236,6 +238,9 @@ class FtpUpload:
         for thispath in sorted(srcpath.walkfiles()):
             if only:
                 if not thispath.fnmatch(only):
+                    continue
+            if skip:
+                if thispath.fnmatch(skip):
                     continue
             thatpath = srcpath.relpathto(thispath)
             thatpathstr = str(thatpath)
