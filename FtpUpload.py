@@ -242,6 +242,17 @@ class FtpUpload:
             if skip:
                 if thispath.fnmatch(skip):
                     continue
+
+            # Find the pattern the file matches, if any, and get the ftp
+            # function to use from the map.
+            for pat in patdict.keys():
+                if thispath.fnmatch(pat):
+                    ftpfn = patdict[pat]
+                    break
+            else:
+                # It's not a file type we grok, skip it.
+                continue
+
             thatpath = srcpath.relpathto(thispath)
             thatpathstr = str(thatpath)
             # Compute this file's MD5 fingerprint
@@ -259,16 +270,11 @@ class FtpUpload:
 
             # If the current file is different, then put it to the server.
             if thisMd5 != thatMd5:
-                # Find the pattern the file matches, and use the ftp function
-                # from the map.
-                for pat in patdict.keys():
-                    if thispath.fnmatch(pat):
-                        ftpfn = patdict[pat]
-                        ftpfn(thispath, thatpath)
+                ftpfn(thispath, thatpath)
 
-                        nchanged += 1
-                        if nchanged % 30 == 0:
-                            self.writeMd5()
+                nchanged += 1
+                if nchanged % 30 == 0:
+                    self.writeMd5()
 
     def deleteOldFiles(self):
         """
