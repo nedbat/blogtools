@@ -111,7 +111,7 @@ def markdown(text):
 imgsizecache = {}
 curdir = os.getcwd()
 # Yuk! Hard-coded path!
-imgpath = [ curdir, os.path.join(curdir, 'pages') ]
+imgpath = [ curdir, os.path.join(curdir, 'public') ]
 
 def getImageSize(s):
     if s.startswith('http://') or s.startswith('file://'):
