@@ -116,6 +116,8 @@ imgpath = [ curdir, os.path.join(curdir, 'public') ]
 def getImageSize(s):
     if s.startswith('http://') or s.startswith('file://'):
         return
+    if s.startswith('//'):
+        s = s.split('/', maxsplit=3)[3]
     if s not in imgsizecache:
         img = None
         for p in imgpath:
