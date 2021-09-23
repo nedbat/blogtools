@@ -26,7 +26,7 @@ def makeuri(base, u, dpath):
         uri += u
         # Don't link to index.html pages.
         if uri.endswith('/index.html'):
-            uri = uri[:-len('/index.html')]
+            uri = uri.removesuffix('/index.html')
     return uri
 
 def urlquote(u):
