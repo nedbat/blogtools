@@ -117,6 +117,7 @@ def getImageSize(s):
     if s.startswith('http://') or s.startswith('file://'):
         return
     if s.startswith('//'):
+        # Turn "//domain.com/path/to/file" into "path/to/file"
         s = s.split('/', maxsplit=3)[3]
     if s not in imgsizecache:
         img = None
