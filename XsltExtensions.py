@@ -60,8 +60,8 @@ def idfromtext(s):
 
 def slugfromtext(txt):
     slug = txt.encode('ascii', 'ignore').decode('ascii').replace(' ', '_').lower()
-    slug = re.sub('[^\w _]', '', slug)
-    slug = re.sub('_+', '_', slug).strip('_')
+    slug = re.sub(r'[^\w _]', '', slug)
+    slug = re.sub(r'_+', r'_', slug).strip('_')
     if not slug:
         slug = urllib.parse.quote(txt.strip().replace(' ', '_').encode('utf-8'))
         slug = slug.replace('%', '_')
