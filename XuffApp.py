@@ -568,7 +568,10 @@ class XuffApp:
         kw = {}
         kw['host'] = self.getAttr(e, 'host')
         kw['user'] = self.getAttr(e, 'user')
-        kw['password'] = self.getAttr(e, 'password')
+        pw = self.getAttr(e, 'password')
+        if pw.startswith("env:"):
+            pw = os.environ[pw[4:]]
+        kw['password'] = pw
         kw['hostdir'] = self.getAttrNullOk(e, 'hostdir')
         kw['src'] = self.getAttr(e, 'src', '.')
         kw['text'] = self.getAttr(e, 'text')
