@@ -77,7 +77,7 @@ def lexcode(code, lang, number=False):
 
     class CodeHtmlFormatter(pygments.formatters.HtmlFormatter):
 
-        def wrap(self, source, outfile):
+        def wrap(self, source):
             return self._wrap_code(source)
 
         def _wrap_code(self, source):
