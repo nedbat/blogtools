@@ -84,8 +84,24 @@ def lexcode(code, lang, number=False):
             # yield 0, '<pre>'
             for i, t in source:
                 if i == 1:
-                    # it's a line of formatted code
-                    t += '<br>'
+                    # it's a line of formatted code.
+                    # But: for some reason pygments can leave some text at the
+                    # end of the line (? maybe nowhere else) outside a <span>,
+                    # which borks the styling (outside text has extra line
+                    # spacing).  So find that tail and wrap it in a span. YUK.
+                    tail = re.search(r"(^|>)([^>]*)$", t)[2]
+                    newline = ""
+                    if tail:
+                        head = t[:-len(tail)]
+                        if tail.endswith("\n"):
+                            tail = tail[:-1]
+                            newline = "\n"
+                    else:
+                        head = t
+                    t = head
+                    if tail:
+                        t += f"<span>{tail}</span>"
+                    t += f"{newline}<br>"
                 yield i, t
             # yield 0, '</pre>'
 
