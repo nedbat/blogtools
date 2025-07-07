@@ -581,7 +581,7 @@ class XuffApp:
         self.upload(**kw)
         
     def upload(self, host, user, password, hostdir, src, text, binary, md5file, only=None, skip=None):
-        import stellated.FtpUpload as FtpUpload
+        import blogtools.FtpUpload as FtpUpload
         import socket
 
         fu = FtpUpload.FtpUpload()

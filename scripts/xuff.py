@@ -6,7 +6,7 @@ http://www.nedbatchelder.com
 """
 
 import sys
-from stellated import XuffApp
+from blogtools import XuffApp
 
 xa = XuffApp.XuffApp()
 xa.main(sys.argv)
