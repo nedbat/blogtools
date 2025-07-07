@@ -165,7 +165,7 @@ class FtpUpload:
         #self.ftp.set_debuglevel(2)
 
         # 2.7.8 added a maxline of 8192, which is not long enough.
-        self.ftp.maxline = 100000
+        self.ftp.maxline = 300000
 
     def setMd5File(self, md5file):
         """
