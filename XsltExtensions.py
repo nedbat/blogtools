@@ -71,7 +71,8 @@ idfromtext = slugfromtext
 
 def lexcode(code, lang, number=False):
     import pygments, pygments.lexers, pygments.formatters
-    # Because we are omitting the <pre> wrapper, we need spaces to become &nbsp;.
+    lang = lang or "text"
+    # Even though this is in a <pre> wrapper, we need spaces to become &nbsp;.
     import pygments.formatters.html as pfh
     pfh._escape_html_table.update({ord(' '): u'&#xA0;'})
 
@@ -81,7 +82,7 @@ def lexcode(code, lang, number=False):
             return self._wrap_code(source)
 
         def _wrap_code(self, source):
-            # yield 0, '<pre>'
+            yield 0, f'<pre class="{lang}">'
             for i, t in source:
                 if i == 1:
                     # it's a line of formatted code.
@@ -103,7 +104,7 @@ def lexcode(code, lang, number=False):
                         t += f"<span>{tail}</span>"
                     t += f"{newline}<br>"
                 yield i, t
-            # yield 0, '</pre>'
+            yield 0, '</pre>'
 
     aliases = {
         "cs": "c#",
