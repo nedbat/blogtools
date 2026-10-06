@@ -73,8 +73,9 @@ def lexcode(code, lang, number=False):
     import pygments, pygments.lexers, pygments.formatters
     lang = lang or "text"
     # Even though this is in a <pre> wrapper, we need spaces to become &nbsp;.
-    import pygments.formatters.html as pfh
-    pfh._escape_html_table.update({ord(' '): u'&#xA0;'})
+    # Turn every space into an em-square, which pygments still lexes as a
+    # space. At the end, turn every em-square into a non-breaking space.
+    code = code.replace(" ", "\u2001")
 
     class CodeHtmlFormatter(pygments.formatters.HtmlFormatter):
 
@@ -117,6 +118,7 @@ def lexcode(code, lang, number=False):
     lexer = pygments.lexers.get_lexer_by_name(lang, stripall=True)
     formatter = CodeHtmlFormatter(linenos='inline' if number else False, cssclass="source")
     result = pygments.highlight(code, lexer, formatter)
+    result = result.replace("\u2001", "&#xA0;")
     return result
 
 
